@@ -1,5 +1,7 @@
 node_modules/
 dist/
+# The built plugin is committed so manifest.json works right after cloning.
+!apps/plugin/dist/
 .vercel/
 .DS_Store
 *.log

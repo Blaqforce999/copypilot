@@ -1,0 +1,1911 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>/* Figma supplies --figma-color-* when themeColors is on; the fallbacks are for a plain browser. */
+:root {
+  --bg: var(--figma-color-bg, #fff);
+  --bg-2: var(--figma-color-bg-secondary, #f5f5f5);
+  --bg-hover: var(--figma-color-bg-hover, #f0f0f0);
+  --text: var(--figma-color-text, #1e1e1e);
+  --text-2: var(--figma-color-text-secondary, #6b6b6b);
+  --text-3: var(--figma-color-text-tertiary, #9a9a9a);
+  --border: var(--figma-color-border, #e6e6e6);
+  --brand: var(--figma-color-bg-brand, #0d99ff);
+  --on-brand: var(--figma-color-text-onbrand, #fff);
+  --brand-text: var(--figma-color-text-brand, #007be5);
+  --danger: var(--figma-color-text-danger, #dc3412);
+  --danger-bg: var(--figma-color-bg-danger-tertiary, #fff1ee);
+  --warning: var(--figma-color-text-warning, #b86200);
+  --success: var(--figma-color-text-success, #14ae5c);
+  --success-bg: var(--figma-color-bg-success-tertiary, #ebfff0);
+  --sev-critical: #e5484d;
+  --sev-high: #f76b15;
+  --sev-medium: #ffb224;
+  --sev-low: #8e8c99;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 12px/1.45 Inter, system-ui, -apple-system, sans-serif;
+}
+button, textarea, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; opacity: 0.45; }
+#app { display: flex; flex-direction: column; height: 100%; }
+
+/* Header */
+.top { display: flex; align-items: center; gap: 8px; padding: 0 12px; height: 41px; border-bottom: 1px solid var(--border); flex: none; }
+.brand { font-weight: 600; margin-right: auto; display: flex; align-items: center; gap: 6px; }
+.brand-mark { width: 14px; height: 14px; border-radius: 4px; background: var(--brand); }
+.tabs { display: flex; gap: 2px; }
+.tab { border: 0; background: none; padding: 5px 9px; border-radius: 5px; color: var(--text-2); }
+.tab[aria-selected="true"] { background: var(--bg-2); color: var(--text); font-weight: 500; }
+
+.scroll { flex: 1; overflow-y: auto; }
+.pad { padding: 12px; }
+.muted { color: var(--text-2); }
+.small { font-size: 11px; }
+.section-label { font-size: 11px; font-weight: 500; color: var(--text-2); margin: 0 0 6px; }
+
+/* Start */
+.segmented { display: flex; background: var(--bg-2); border-radius: 6px; padding: 2px; margin-bottom: 12px; }
+.segmented button { flex: 1; border: 0; background: none; padding: 5px; border-radius: 4px; color: var(--text-2); }
+.segmented button[aria-pressed="true"] { background: var(--bg); color: var(--text); box-shadow: 0 0 0 1px var(--border); font-weight: 500; }
+.selection-card { border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin-bottom: 12px; }
+.selection-card strong { display: block; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.btn { border: 1px solid var(--border); background: var(--bg); border-radius: 6px; padding: 6px 10px; }
+.btn:hover:not(:disabled) { background: var(--bg-hover); }
+.btn-primary { background: var(--brand); color: var(--on-brand); border-color: transparent; font-weight: 500; }
+.btn-primary:hover:not(:disabled) { background: var(--brand); filter: brightness(1.08); }
+.btn-block { width: 100%; padding: 8px; }
+.btn-ghost { border-color: transparent; background: none; color: var(--text-2); }
+.guide-note { display: flex; gap: 8px; margin-top: 12px; padding: 10px; background: var(--bg-2); border-radius: 6px; color: var(--text-2); font-size: 11px; }
+
+/* Progress */
+.progress { height: 4px; background: var(--bg-2); border-radius: 2px; overflow: hidden; margin: 8px 0; }
+.progress > div { height: 100%; background: var(--brand); transition: width 0.15s; }
+
+/* Summary */
+.summary { padding: 12px 12px 8px; border-bottom: 1px solid var(--border); flex: none; }
+.summary-head { display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px; }
+.summary-head h2 { font-size: 13px; margin: 0; font-weight: 600; }
+.summary-head .btn { margin-left: auto; padding: 3px 8px; }
+.chips { display: flex; gap: 4px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--border); background: var(--bg); border-radius: 999px; padding: 2px 8px; font-size: 11px; display: inline-flex; align-items: center; gap: 5px; }
+.chip[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+.dot { width: 7px; height: 7px; border-radius: 50%; flex: none; display: inline-block; }
+.dot.critical { background: var(--sev-critical); }
+.dot.high { background: var(--sev-high); }
+.dot.medium { background: var(--sev-medium); }
+.dot.low { background: var(--sev-low); }
+
+/* Rows */
+.row { border-bottom: 1px solid var(--border); }
+.row-head { display: flex; gap: 8px; align-items: flex-start; width: 100%; text-align: left; border: 0; background: none; padding: 10px 12px; }
+.row-head:hover { background: var(--bg-hover); }
+.row-head .dot { margin-top: 5px; }
+.row-main { flex: 1; min-width: 0; }
+.row-kind { font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-3); font-weight: 500; }
+.row-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row-title { color: var(--text-2); font-size: 11px; }
+.badge { font-size: 10px; background: var(--bg-2); color: var(--text-2); border-radius: 4px; padding: 1px 5px; white-space: nowrap; }
+.chev { color: var(--text-3); transition: transform 0.15s; }
+.row.open .chev { transform: rotate(90deg); }
+.row.applied .row-text { text-decoration: none; color: var(--text-2); }
+.applied-tag { color: var(--success); font-size: 11px; font-weight: 500; }
+
+/* Card */
+.card { padding: 0 12px 12px 27px; }
+.issue { margin-bottom: 10px; }
+.issue-title { display: flex; gap: 6px; align-items: center; font-weight: 500; }
+.sev { font-size: 10px; font-weight: 500; text-transform: capitalize; border-radius: 4px; padding: 0 5px; }
+.sev.critical { color: var(--sev-critical); background: color-mix(in srgb, var(--sev-critical) 12%, transparent); }
+.sev.high { color: var(--sev-high); background: color-mix(in srgb, var(--sev-high) 12%, transparent); }
+.sev.medium { color: #b27b00; background: color-mix(in srgb, var(--sev-medium) 18%, transparent); }
+.sev.low { color: var(--text-2); background: var(--bg-2); }
+.issue p { margin: 2px 0 0; color: var(--text-2); }
+.guide-ref { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+
+.diff { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin: 10px 0; }
+.diff > div { padding: 7px 9px; white-space: pre-wrap; word-break: break-word; }
+.diff .before { background: var(--bg-2); color: var(--text-2); }
+.diff .after { border-top: 1px solid var(--border); }
+.diff .lbl { display: block; font-size: 10px; color: var(--text-3); margin-bottom: 2px; }
+del { color: var(--danger); background: var(--danger-bg); text-decoration: line-through; }
+ins { color: var(--success); background: var(--success-bg); text-decoration: none; font-weight: 500; }
+
+.note { font-size: 11px; color: var(--warning); margin: 4px 0; }
+.note.bad { color: var(--danger); }
+.alts { display: flex; gap: 4px; flex-wrap: wrap; margin: 6px 0; }
+.alts button { border: 1px dashed var(--border); background: none; border-radius: 4px; padding: 2px 6px; font-size: 11px; }
+.actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+textarea { width: 100%; min-height: 60px; resize: vertical; border: 1px solid var(--border); border-radius: 6px; padding: 7px 9px; background: var(--bg); }
+textarea:focus, input:focus { outline: 2px solid var(--brand); outline-offset: -1px; }
+
+.group-label { padding: 10px 12px 4px; font-size: 11px; font-weight: 500; color: var(--text-2); }
+details.possible summary { padding: 10px 12px; cursor: pointer; color: var(--text-2); font-size: 11px; }
+
+/* Footer */
+.footer { border-top: 1px solid var(--border); padding: 8px 12px; display: flex; align-items: center; gap: 8px; flex: none; }
+.footer .muted { margin-left: auto; font-size: 11px; }
+
+/* All clear */
+.clear { padding: 24px 16px; text-align: center; }
+.clear h2 { font-size: 14px; margin: 8px 0 4px; }
+.checks { list-style: none; padding: 0; margin: 16px 0 0; text-align: left; }
+.checks li { display: flex; gap: 8px; padding: 4px 0; }
+.checks .ok { color: var(--success); }
+.checks .no { color: var(--danger); }
+
+/* Rules */
+.field { margin-bottom: 14px; }
+.field label { display: block; font-weight: 500; margin-bottom: 4px; }
+.field .hint { font-size: 11px; color: var(--text-2); margin-bottom: 6px; }
+input[type="text"] { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 6px 9px; background: var(--bg); }
+
+.error-banner { margin: 12px; padding: 8px 10px; border-radius: 6px; background: var(--danger-bg); color: var(--danger); font-size: 11px; }
+</style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>"use strict";
+(() => {
+  // ../../packages/copy-engine/src/guide.ts
+  var GUIDE_NAME = "Material UX writing guide";
+  var CHECKLIST = {
+    task: "Helps the user complete a task",
+    clear: "Clear without extra explanation",
+    concise: "Concise without sounding robotic",
+    tone: "Tone fits the state",
+    familiar: "Uses familiar words",
+    jargon: "Avoids unnecessary jargon",
+    consistent: "Uses consistent terminology",
+    consequences: "Explains consequences when needed",
+    next_step: "Tells the user what to do next",
+    accessible: "Accessible"
+  };
+  var ref = (section, principle) => ({ section, principle });
+  var VAGUE_CTAS = ["submit", "okay", "ok", "proceed", "click here", "tap here", "click", "yes", "no", "go"];
+  var SOFT_CTAS = ["next"];
+  var ALLOWED_LABELS = [
+    "next",
+    "back",
+    "done",
+    "cancel",
+    "close",
+    "skip",
+    "got it",
+    "not now",
+    "maybe later",
+    "no thanks",
+    "later",
+    "all set"
+  ];
+  var ACTION_VERBS = /* @__PURE__ */ new Set([
+    "accept",
+    "add",
+    "allow",
+    "apply",
+    "approve",
+    "archive",
+    "ask",
+    "book",
+    "browse",
+    "buy",
+    "call",
+    "cancel",
+    "change",
+    "check",
+    "choose",
+    "claim",
+    "clear",
+    "close",
+    "compare",
+    "complete",
+    "confirm",
+    "connect",
+    "contact",
+    "continue",
+    "copy",
+    "create",
+    "customize",
+    "decline",
+    "delete",
+    "deny",
+    "deposit",
+    "disable",
+    "disconnect",
+    "discard",
+    "dismiss",
+    "download",
+    "duplicate",
+    "edit",
+    "enable",
+    "end",
+    "enter",
+    "explore",
+    "export",
+    "filter",
+    "find",
+    "finish",
+    "follow",
+    "get",
+    "give",
+    "go",
+    "hide",
+    "import",
+    "install",
+    "invite",
+    "join",
+    "keep",
+    "leave",
+    "learn",
+    "let",
+    "link",
+    "load",
+    "log",
+    "manage",
+    "mark",
+    "move",
+    "mute",
+    "open",
+    "order",
+    "pause",
+    "pay",
+    "pin",
+    "place",
+    "play",
+    "post",
+    "preview",
+    "print",
+    "publish",
+    "read",
+    "record",
+    "redeem",
+    "refresh",
+    "reject",
+    "reload",
+    "remind",
+    "remove",
+    "rename",
+    "renew",
+    "reply",
+    "report",
+    "request",
+    "resend",
+    "reset",
+    "restart",
+    "restore",
+    "resume",
+    "retry",
+    "return",
+    "review",
+    "save",
+    "schedule",
+    "search",
+    "see",
+    "select",
+    "send",
+    "set",
+    "share",
+    "show",
+    "sign",
+    "sort",
+    "start",
+    "stay",
+    "stop",
+    "subscribe",
+    "swap",
+    "switch",
+    "sync",
+    "take",
+    "tell",
+    "transfer",
+    "try",
+    "turn",
+    "undo",
+    "unlock",
+    "unsubscribe",
+    "update",
+    "upgrade",
+    "upload",
+    "use",
+    "verify",
+    "view",
+    "visit",
+    "watch",
+    "withdraw",
+    "write"
+  ]);
+  var GENERIC_ERRORS = [
+    /something (went|has gone) wrong/i,
+    /\ban? (unknown |unexpected )?error (has )?occurred\b/i,
+    /\bunknown error\b/i,
+    /^(an? )?error[.!]*$/i,
+    /\b(could not|couldn[’']t|can ?not|was unable to|were unable to) be (processed|completed)\b/i,
+    /\bunable to (be )?process/i,
+    /^(request|operation|action|process) failed[.!]*$/i,
+    /^failed[.!]*$/i,
+    /^invalid( input| value| data)?[.!]*$/i
+  ];
+  var NEXT_STEP_VERBS = /* @__PURE__ */ new Set([
+    "try",
+    "check",
+    "contact",
+    "choose",
+    "select",
+    "enter",
+    "update",
+    "refresh",
+    "reload",
+    "retry",
+    "go",
+    "sign",
+    "log",
+    "wait",
+    "use",
+    "add",
+    "make",
+    "verify",
+    "confirm",
+    "reconnect",
+    "restart",
+    "allow",
+    "turn",
+    "enable",
+    "review",
+    "call",
+    "email",
+    "visit",
+    "remove",
+    "free",
+    "upgrade",
+    "reset",
+    "open",
+    "save",
+    "fix",
+    "ask",
+    "connect",
+    "install"
+  ]);
+  var NEXT_STEP_PHRASE = /\b(try again|contact (us|support)|go to|you can (try|retry|check|change|update|contact))\b/i;
+  var PLAYFUL = /\b(oops|whoops|uh[- ]oh|yikes|oh no|d['’]oh|oh snap|aw snap)\b[!.,]*\s*/gi;
+  var DESTRUCTIVE = /\b(delete|remove|erase|discard|deactivate|reset|revoke|disconnect|leave|clear|cancel (?:(?:your|the|this) )?(?:subscription|order|plan|transaction|membership|account))\b/i;
+  var CONSEQUENCE = /(can[’']?t|cannot|won[’']?t be able to) (be )?(undo|undone|recover|reversed|restore)|\bpermanent|\birreversib|\byou[’']?ll lose\b|\bwill lose\b|\bthis (will )?(permanently )?(removes?|deletes?|erases?|clears?|cancels?)\b|\byou[’']?ll need to\b|\bno longer\b|\bwill be (deleted|removed|lost|erased)\b/i;
+  var VAGUE_DIALOG_TITLE = /^(are you sure\??|warning!*|confirm(ation)?\??|attention!*|alert!*|notice|important!*|heads up!*)$/i;
+  var VAGUE_EMPTY = /^(no (data|results|items|content|records|entries)( found| available)?|nothing (here|to show|found|yet)|empty|n\/a|none)[.!]*$/i;
+  var WORDY = [
+    [/\bin order to\b/gi, "to"],
+    [/\butilizes\b/gi, "uses"],
+    [/\butilized\b/gi, "used"],
+    [/\butilizing\b/gi, "using"],
+    [/\butilize\b/gi, "use"],
+    [/\bat this (point in )?time\b/gi, "now"],
+    [/\bprior to\b/gi, "before"],
+    [/\bin the event that\b/gi, "if"],
+    [/\bdue to the fact that\b/gi, "because"],
+    [/\b(is|are) able to\b/gi, "can"],
+    [/\bplease note that\s*/gi, ""],
+    [/\bmake a decision\b/gi, "decide"],
+    [/\bwith regards? to\b/gi, "about"],
+    [/\bcommence\b/gi, "start"],
+    [/\bterminate\b/gi, "end"],
+    [/\bassistance\b/gi, "help"],
+    [/\bsubsequently\b/gi, "then"],
+    [/\bin the near future\b/gi, "soon"]
+  ];
+  var FILLER = /\b(simply|just|easily|basically|actually)\s+(?!now\b)/gi;
+  var FLUFF = /\b(seamless(ly)?|effortless(ly)?|powerful|robust|cutting[- ]edge|revolutionary|best[- ]in[- ]class|world[- ]class|amazing|awesome|incredibl[ey]|game[- ]chang(er|ing)|leverage|synerg(y|ies)|hassle[- ]free|next[- ]gen(eration)?)\b/i;
+  var JARGON = [
+    [/\bthe user\b/gi, "you", "the user"],
+    [/\binvalid input\b/gi, null, "invalid input"],
+    [/\bparameters?\b/gi, null, "parameter"],
+    [/\bnull\b/gi, null, "null"],
+    [/\bexceptions?\b/gi, null, "exception"],
+    [/\bfatal error\b/gi, null, "fatal error"],
+    [/\bserver error\b/gi, null, "server error"],
+    [/\bbackend\b/gi, null, "backend"],
+    [/\bpayload\b/gi, null, "payload"],
+    [/\btimed out\b/gi, "took too long", "timed out"],
+    [/\btimeout\b/gi, null, "timeout"],
+    [/\bauthenticate\b/gi, "sign in", "authenticate"],
+    [/\bauthentication\b/gi, "sign-in", "authentication"],
+    [/\bexecute\b/gi, "run", "execute"],
+    [/\babort(ed)?\b/gi, null, "abort"],
+    [/\binitiali[sz]e\b/gi, "set up", "initialize"],
+    [/\binstantiate\b/gi, null, "instantiate"],
+    [/\berror code\b/gi, null, "error code"],
+    [/\b(HTTP|4\d\d|5\d\d)\b/g, null, "status code"]
+  ];
+  var NUMBER_WORDS = {
+    two: "2",
+    three: "3",
+    four: "4",
+    five: "5",
+    six: "6",
+    seven: "7",
+    eight: "8",
+    nine: "9",
+    ten: "10"
+  };
+  var SYNONYM_GROUPS = [
+    ["sign in", "log in", "login", "log on", "sign on"],
+    ["sign out", "log out", "logout"],
+    ["sign up", "register", "create account", "create an account"],
+    ["email", "e-mail"],
+    ["username", "user name"],
+    ["password", "passcode"],
+    ["wi-fi", "wifi"],
+    ["ok", "okay"]
+  ];
+  var ALT_PREFIX = /^(an? )?(image|picture|photo|graphic|icon|screenshot) (of|showing)\s+/i;
+  var LINK_VAGUE = /\b(click|tap) here\b/i;
+  var COLOR_ONLY = /\b(in|marked|highlighted in|shown in) (red|green|blue|orange|yellow|gr[ae]y)\b|\b(red|green|orange|yellow) (fields?|items?|text|buttons?|icons?|dots?)\b/i;
+  var DIRECTIONAL = /\b(see|click|tap|use) (the )?(below|above)\b|\bon the (left|right)\b|\b(below|above)[.:]?\s*$/im;
+  var ACTION_HINTS = [
+    { match: /\bpay(ment|ing)?\b|\bcheckout\b|\bcard\b|\bbilling\b/i, failed: "process your payment", recovery: "Check your card details and try again.", cta: "Continue to payment" },
+    { match: /\bwallet\b/i, failed: "connect your wallet", recovery: "Check your wallet and try again.", cta: "Connect wallet" },
+    { match: /\bupload/i, failed: "upload your file", recovery: "Check the file size and try again.", cta: "Upload file" },
+    { match: /\bsign(ing)? in\b|\blog(ging)? ?in\b|\bpassword\b/i, failed: "sign you in", recovery: "Check your email and password and try again.", cta: "Sign in" },
+    { match: /\bsign(ing)? up\b|\bcreate (an |your )?account\b|\bregist/i, failed: "create your account", recovery: "Try again.", cta: "Create account" },
+    { match: /\bsend(ing)?\b|\bmessage\b/i, failed: "send your message", recovery: "Check your connection and try again.", cta: "Send message" },
+    { match: /\bdownload/i, failed: "download the file", recovery: "Check your connection and try again.", cta: "Download" },
+    { match: /\bsav(e|ing)\b|\bchanges\b|\bsettings\b|\bprofile\b/i, failed: "save your changes", recovery: "Check your connection and try again.", cta: "Save changes" },
+    { match: /\bdelet/i, failed: "delete this item", recovery: "Try again.", cta: "Delete" },
+    { match: /\bsearch/i, failed: "complete your search", recovery: "Try again.", cta: "Search" },
+    { match: /\bshipping\b|\baddress\b/i, failed: "save your address", recovery: "Check the address and try again.", cta: "Continue to shipping" },
+    { match: /\breview\b|\bcart\b|\border\b/i, failed: "place your order", recovery: "Try again.", cta: "Review order" },
+    { match: /\bload(ing)?\b|\bpage\b|\bfeed\b/i, failed: "load this page", recovery: "Refresh the page and try again.", cta: "Refresh" },
+    { match: /\bconnect(ion)?\b|\bnetwork\b|\boffline\b|\binternet\b/i, failed: "connect", recovery: "Check your internet connection and try again.", cta: "Try again" }
+  ];
+
+  // ../../packages/copy-engine/src/text.ts
+  var normalize = (s) => s.replace(/\s+/g, " ").trim();
+  var lines = (s) => s.split(/\n+/).map((l) => l.trim()).filter(Boolean);
+  var sentences = (s) => normalize(s).split(/(?<=[.!?…])\s+/).filter(Boolean);
+  var words = (s) => s.match(/[A-Za-z0-9][A-Za-z0-9’'-]*/g) ?? [];
+  var capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  var matchCase = (source, replacement) => /^[A-Z]/.test(source) ? capitalize(replacement) : replacement;
+  var fixSentenceStarts = (s) => s.replace(/^(\s*)([a-z])/, (_, ws, c) => ws + c.toUpperCase()).replace(/([.!?]\s+|\n\s*)([a-z])/g, (_, sep, c) => sep + c.toUpperCase());
+  var tidy = (s) => fixSentenceStarts(
+    s.replace(/[ \t]{2,}/g, " ").replace(/ +([.,!?])/g, "$1").replace(/^[ \t]+|[ \t]+$/gm, "")
+  );
+  var endsWithPunctuation = (s) => /[.!?…]$/.test(s.trim());
+  var firstWord = (s) => (words(s)[0] ?? "").toLowerCase();
+  var escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  var phraseRegExp = (phrase, flags = "gi") => new RegExp(`(?<![\\w-])${escapeRegExp(phrase).replace(/ /g, "\\s+")}(?![\\w-])`, flags);
+  var MINOR_WORDS = /* @__PURE__ */ new Set([
+    "a",
+    "an",
+    "the",
+    "and",
+    "or",
+    "but",
+    "to",
+    "of",
+    "in",
+    "on",
+    "for",
+    "with",
+    "at",
+    "by",
+    "from",
+    "as",
+    "is",
+    "your",
+    "my",
+    "our",
+    "it",
+    "vs"
+  ]);
+  var isTitleCase = (s) => {
+    const ws = words(s);
+    if (ws.length < 2) return false;
+    const rest = ws.slice(1).filter((w) => !MINOR_WORDS.has(w.toLowerCase()) && !/^\d/.test(w));
+    if (rest.length < 1) return false;
+    const capped = rest.filter((w) => /^[A-Z][a-z]/.test(w));
+    return capped.length === rest.length && capped.length >= 1 && ws.length >= 2;
+  };
+  var toSentenceCase = (s, keep = []) => {
+    const keepSet = new Set(keep.map((k) => k.toLowerCase()));
+    let first = true;
+    return s.replace(/[A-Za-z][A-Za-z’'-]*/g, (w) => {
+      const out = first || /^[A-Z0-9]{2,}$/.test(w) || keepSet.has(w.toLowerCase()) ? w : w.toLowerCase();
+      first = false;
+      return out;
+    });
+  };
+  var isAllCaps = (s) => {
+    const letters = s.replace(/[^A-Za-z]/g, "");
+    return letters.length >= 8 && letters === letters.toUpperCase() && words(s).length >= 2;
+  };
+  var protectedTokens = (s) => s.match(/\{[^}]+\}|%[sd@]|\$\{[^}]+\}|\d+(?:[.,]\d+)?/g) ?? [];
+
+  // ../../packages/copy-engine/src/classify.ts
+  var NAME_HINTS = [
+    [/\b(btn|button|cta)\b/i, "button"],
+    [/\b(error|alert[- ]?error|invalid)\b/i, "error"],
+    [/\b(success)\b/i, "success"],
+    [/\b(toast|snackbar)\b/i, "snackbar"],
+    [/\bbanner\b/i, "banner"],
+    [/\b(dialog|modal)\b.*\btitle\b/i, "dialog_title"],
+    [/\b(dialog|modal)\b/i, "dialog"],
+    [/\btooltip\b/i, "tooltip"],
+    [/\b(empty)\b/i, "empty_state"],
+    [/\b(helper|hint|caption)\b/i, "helper_text"],
+    [/\b(label)\b/i, "label"],
+    [/\b(placeholder|input|field)\b/i, "form_field"],
+    [/\b(tab)\b/i, "tab"],
+    [/\b(nav|menu)\b/i, "navigation"],
+    [/\b(heading|title|h[1-6])\b/i, "heading"],
+    [/\b(loading|spinner|progress)\b/i, "loading"],
+    [/\balt\b/i, "alt_text"]
+  ];
+  function classify(text, name) {
+    if (name) {
+      for (const [re, type] of NAME_HINTS) if (re.test(name)) return { type, inferred: true };
+    }
+    const t = normalize(text);
+    const lower = t.toLowerCase().replace(/[.!?]+$/, "");
+    const ls = lines(text);
+    const ws = words(t);
+    if (ALT_PREFIX.test(t)) return { type: "alt_text", inferred: true };
+    if (/\b(went wrong|couldn[’']t|could not|failed|error|invalid|unable to)\b/i.test(t)) return { type: "error", inferred: true };
+    if (VAGUE_EMPTY.test(t) || /^no \w+( \w+)? yet\b/i.test(t)) return { type: "empty_state", inferred: true };
+    if (/\?$/.test(ls[0] ?? "") && ls.length > 1) return { type: "dialog", inferred: true };
+    if (/^are you sure/i.test(t)) return { type: "dialog_title", inferred: true };
+    if (/…$|\.\.\.$/.test(ls[0] ?? "") && /ing\b/.test(ls[0] ?? "")) return { type: "loading", inferred: true };
+    if (/\b(saved|sent|completed|copied|updated|deleted|added|success(fully)?)\b/i.test(t) && ws.length <= 10)
+      return { type: "success", inferred: true };
+    if (ws.length >= 3 && ws.length <= 8 && isTitleCase(t) && !endsWithPunctuation(t)) return { type: "heading", inferred: true };
+    if (ws.length <= 4 && !endsWithPunctuation(t) && (VAGUE_CTAS.includes(lower) || SOFT_CTAS.includes(lower) || ALLOWED_LABELS.includes(lower) || ACTION_VERBS.has(firstWord(t))))
+      return { type: "button", inferred: true };
+    if (ws.length <= 6 && !endsWithPunctuation(t)) return { type: "heading", inferred: true };
+    return { type: "body", inferred: true };
+  }
+
+  // ../../packages/copy-engine/src/context.ts
+  var contextOf = (node) => [...node.surroundingText ?? [], node.name ?? ""].filter(Boolean);
+  function inferAction(node) {
+    for (const ctx of contextOf(node)) {
+      const hit = ACTION_HINTS.find((h) => h.match.test(ctx));
+      if (hit) return hit;
+    }
+    return void 0;
+  }
+  var DETERMINERS = /* @__PURE__ */ new Set(["this", "the", "your", "my", "a", "an", "these", "those", "our"]);
+  function inferCta(node) {
+    for (const ctx of contextOf(node)) {
+      const ws = words(ctx);
+      if (ws.length === 0 || ws.length > 6) continue;
+      const l = normalize(ctx).toLowerCase().replace(/[.!?]+$/, "");
+      if (ALLOWED_LABELS.includes(l) || VAGUE_CTAS.includes(l) || SOFT_CTAS.includes(l) || l === normalize(node.text).toLowerCase()) continue;
+      if (ACTION_VERBS.has(firstWord(ctx)) && !["continue", "submit", "go", "try"].includes(firstWord(ctx))) {
+        const object = ws.slice(1).filter((w) => !DETERMINERS.has(w.toLowerCase())).slice(0, 2);
+        return capitalize([ws[0].toLowerCase(), ...object.map((w) => w.toLowerCase())].join(" "));
+      }
+    }
+    return inferAction(node)?.cta;
+  }
+
+  // ../../packages/copy-engine/src/rules/define.ts
+  var defineRule = (rule) => rule;
+  var SHORT_UI = ["button", "label", "navigation", "tab", "heading", "dialog_title", "form_field"];
+
+  // ../../packages/copy-engine/src/rules/components.ts
+  var GUIDE_CTA_EXAMPLES = ["Continue", "Save changes", "Review order"];
+  var label = (text) => normalize(text).toLowerCase().replace(/[.!]+$/, "");
+  var hasNextStep = (text) => NEXT_STEP_PHRASE.test(text) || lines(text).flatMap(sentences).some((s) => NEXT_STEP_VERBS.has(firstWord(s.replace(/^please,?\s+/i, ""))));
+  var isGenericError = (text) => GENERIC_ERRORS.some((re) => re.test(normalize(text)));
+  var calm = (s) => tidy(s.replace(PLAYFUL, "").replace(/!+/g, "."));
+  function errorRewrite(node, text) {
+    const action = inferAction(node);
+    if (!action) return void 0;
+    const existingStep = lines(text).flatMap(sentences).find((s) => hasNextStep(s) && !isGenericError(s));
+    const next = existingStep ? calm(existingStep) : action.recovery;
+    return `We couldn't ${action.failed}. ${next}`;
+  }
+  var vagueCta = defineRule({
+    id: "VAGUE_CTA",
+    on: ["button"],
+    check: ({ node, text }) => {
+      const l = label(text);
+      const soft = SOFT_CTAS.includes(l);
+      if (!VAGUE_CTAS.includes(l) && !soft) return;
+      const specific = inferCta(node);
+      if (soft && !specific) return;
+      return {
+        category: "ux_writing",
+        severity: soft ? "low" : "high",
+        title: soft ? "Button could be more specific" : "Vague button label",
+        explanation: specific ? `"${normalize(text)}" doesn't say what happens next. A label naming the action sets a clear expectation.` : `"${normalize(text)}" doesn't say what happens. Use a verb that names the result. The reviewer couldn't tell the action from the screen, so these are examples only.`,
+        confidence: specific ? soft ? 0.6 : 0.8 : 0.4,
+        guideRef: ref("Buttons", "Use clear action verbs. Avoid vague labels like Submit, Okay, Proceed, Click here."),
+        checklist: "clear",
+        rewrite: specific,
+        alternatives: specific ? void 0 : GUIDE_CTA_EXAMPLES,
+        needsContext: !specific
+      };
+    }
+  });
+  var ctaNotVerbFirst = defineRule({
+    id: "CTA_NOT_VERB_FIRST",
+    on: ["button"],
+    check: ({ node, text }) => {
+      const l = label(text);
+      if (VAGUE_CTAS.includes(l) || SOFT_CTAS.includes(l) || ALLOWED_LABELS.includes(l)) return;
+      if (ACTION_VERBS.has(firstWord(text))) return;
+      const specific = inferCta(node);
+      return {
+        category: "ux_writing",
+        severity: "low",
+        title: "Button doesn't start with a verb",
+        explanation: "Buttons work best as actions. Starting with a verb tells the user what the button does.",
+        confidence: 0.6,
+        guideRef: ref("Buttons", "Use clear action verbs."),
+        checklist: "clear",
+        rewrite: specific && specific.toLowerCase() !== l ? specific : void 0,
+        needsContext: !specific
+      };
+    }
+  });
+  var buttonTooLong = defineRule({
+    id: "BUTTON_TOO_LONG",
+    on: ["button"],
+    check: ({ text }) => {
+      const n = words(text).length;
+      if (n <= 4 && normalize(text).length <= 25) return;
+      return {
+        category: "ux_writing",
+        severity: "medium",
+        title: "Button label is long",
+        explanation: `${n} words is a lot for a button. Keep the action and move any explanation to nearby text.`,
+        confidence: 0.8,
+        guideRef: ref("Word Choice Rules", "Avoid long explanations inside small components."),
+        checklist: "concise",
+        needsContext: true
+      };
+    }
+  });
+  var errorGeneric = defineRule({
+    id: "ERROR_GENERIC",
+    on: ["error"],
+    check: ({ node, text }) => {
+      if (!isGenericError(text)) return;
+      const rewrite = errorRewrite(node, text);
+      return {
+        category: "product_ux",
+        severity: "high",
+        title: "Error doesn't say what happened",
+        explanation: rewrite ? "The message doesn't identify what failed. Naming the failed action tells the user what's affected." : `The message doesn't identify what failed. Say what happened and what to do, e.g. "We couldn't save your changes. Try again." The reviewer couldn't tell the failed action from the screen.`,
+        confidence: rewrite ? 0.8 : 0.5,
+        guideRef: ref("Error Messages", "Every error should answer: What happened? Why? What can the user do next?"),
+        checklist: "clear",
+        rewrite,
+        needsContext: !rewrite
+      };
+    }
+  });
+  var errorNoNextStep = defineRule({
+    id: "ERROR_NO_NEXT_STEP",
+    on: ["error"],
+    check: ({ node, text }) => {
+      if (hasNextStep(text)) return;
+      const action = inferAction(node);
+      const recovery = action?.recovery ?? "Try again.";
+      return {
+        category: "product_ux",
+        severity: "high",
+        title: "No recovery action",
+        explanation: "The error doesn't tell the user what to do next. Add the next best action.",
+        confidence: action ? 0.8 : 0.6,
+        guideRef: ref("Error Messages", "Format: [Problem] [Next best action]."),
+        checklist: "next_step",
+        patch: (t) => {
+          const base = t.trim().replace(/!+$/, "");
+          return `${endsWithPunctuation(base) ? base : `${base}.`} ${recovery}`;
+        }
+      };
+    }
+  });
+  var errorTone = defineRule({
+    id: "ERROR_TONE",
+    on: ["error", "dialog", "dialog_title", "banner", "confirmation"],
+    check: ({ text }) => {
+      PLAYFUL.lastIndex = 0;
+      const playful = PLAYFUL.test(text);
+      PLAYFUL.lastIndex = 0;
+      const exclaim = /!/.test(text);
+      if (!playful && !exclaim) return;
+      return {
+        category: "brand_voice",
+        severity: "medium",
+        title: playful ? "Playful tone in a critical moment" : "Exclamation mark in a critical moment",
+        explanation: "Errors and serious decisions call for a calm, specific tone. Playful words and exclamation marks can read as dismissive when something has gone wrong.",
+        confidence: 0.9,
+        guideRef: ref("Tone Mapping", "Error states: calm, specific, solution-oriented. Avoid cleverness in critical moments."),
+        checklist: "tone",
+        patch: calm,
+        autoApplicable: true
+      };
+    }
+  });
+  var OBJECT_SKIP = /* @__PURE__ */ new Set(["this", "the", "your", "my", "a", "an", "all", "these", "those", "it"]);
+  function titleFromBody(body) {
+    const m = DESTRUCTIVE.exec(body);
+    if (!m) return void 0;
+    const after = words(body.slice(m.index + m[0].length)).filter((w) => !OBJECT_SKIP.has(w.toLowerCase())).slice(0, 2);
+    return `${capitalize([m[0].toLowerCase(), ...after.map((w) => w.toLowerCase())].join(" "))}?`;
+  }
+  var dialogVagueTitle = defineRule({
+    id: "DIALOG_VAGUE_TITLE",
+    on: ["dialog", "dialog_title"],
+    check: ({ node, text, type }) => {
+      const [title = "", ...rest] = lines(text);
+      if (!VAGUE_DIALOG_TITLE.test(title)) return;
+      const fromBody = titleFromBody(rest.join(" "));
+      const cta = type === "dialog_title" ? inferCta(node) : void 0;
+      const better = fromBody ?? (cta ? `${cta}?` : void 0);
+      return {
+        category: "ux_writing",
+        severity: "high",
+        title: "Dialog title doesn't name the decision",
+        explanation: `"${title}" doesn't say what the user is deciding. Put the action in the title as a short question.`,
+        confidence: better ? 0.8 : 0.5,
+        guideRef: ref("Dialogs", 'Dialog title should be brief and clear, e.g. "Delete this project?"'),
+        checklist: "clear",
+        rewrite: better ? [better, ...rest].join("\n") : void 0,
+        needsContext: !better
+      };
+    }
+  });
+  var destructiveNoConsequence = defineRule({
+    id: "DESTRUCTIVE_NO_CONSEQUENCE",
+    on: ["dialog", "confirmation"],
+    check: ({ text }) => {
+      if (!DESTRUCTIVE.test(text) || CONSEQUENCE.test(text)) return;
+      return {
+        category: "product_ux",
+        severity: "critical",
+        title: "Destructive action without consequences",
+        explanation: 'Before a destructive action, say what will be lost and whether it can be undone, e.g. "This removes the project and its saved settings. You can\u2019t undo this."',
+        confidence: 0.85,
+        guideRef: ref("Tone Mapping", "Destructive actions: serious, explicit, consequence-aware."),
+        checklist: "consequences",
+        needsContext: true
+      };
+    }
+  });
+  var emptyStateIncomplete = defineRule({
+    id: "EMPTY_STATE_INCOMPLETE",
+    on: ["empty_state"],
+    check: ({ text }) => {
+      const ls = lines(text);
+      const vague = VAGUE_EMPTY.test(normalize(ls[0] ?? ""));
+      const onlyTitle = ls.length < 2 && sentences(text).length < 2;
+      if (!vague && !onlyTitle) return;
+      return {
+        category: "product_ux",
+        severity: "medium",
+        title: vague ? "Empty state is too vague" : "Empty state has no next step",
+        explanation: vague ? `"${normalize(ls[0] ?? "")}" doesn't say what's missing. Name it, say why it matters, and say what to do next.` : "Add a line that explains why this area matters and what the user can do to fill it.",
+        confidence: 0.75,
+        guideRef: ref("Empty States", "Explain what is missing, why it matters, and what to do next."),
+        checklist: "next_step",
+        alternatives: ["No saved recipients\nSave an address to send faster next time."],
+        needsContext: true
+      };
+    }
+  });
+  var SUCCESS_TEMPLATE = /^(?:your\s+)?(.+?)\s+(?:has|have|was|were)\s+(?:been\s+)?(?:successfully\s+)?([a-z]+ed|sent|made|done)(?:\s+successfully)?[.!]*$/i;
+  var successVerbose = defineRule({
+    id: "SUCCESS_VERBOSE",
+    on: ["success", "snackbar", "confirmation"],
+    check: ({ text }) => {
+      const t = normalize(text);
+      const m = SUCCESS_TEMPLATE.exec(t);
+      const hasSuccessfully = /\bsuccessfully\b/i.test(t);
+      if (!m && !hasSuccessfully) return;
+      return {
+        category: "ux_writing",
+        severity: "low",
+        title: "Success message is wordy",
+        explanation: 'Confirmation works best short and past-tense. "Successfully" repeats what the message already says.',
+        confidence: 0.85,
+        guideRef: ref("Tone Mapping", "Success states: brief and reassuring."),
+        checklist: "concise",
+        rewrite: m ? capitalize(`${m[1].toLowerCase()} ${m[2].toLowerCase()}`) : void 0,
+        patch: m ? void 0 : (s) => tidy(s.replace(/\s*\bsuccessfully\b/gi, "")),
+        autoApplicable: true
+      };
+    }
+  });
+  var snackbarTooLong = defineRule({
+    id: "SNACKBAR_TOO_LONG",
+    on: ["snackbar"],
+    check: ({ text }) => {
+      if (normalize(text).length <= 60 && sentences(text).length <= 1) return;
+      return {
+        category: "ux_writing",
+        severity: "medium",
+        title: "Snackbar message is long",
+        explanation: 'Snackbars disappear on their own, so they should fit in one short line, like "Address copied".',
+        confidence: 0.8,
+        guideRef: ref("Snackbars", "Use for low-priority feedback. Keep it short."),
+        checklist: "concise",
+        needsContext: true
+      };
+    }
+  });
+  var tooltipTooLong = defineRule({
+    id: "TOOLTIP_TOO_LONG",
+    on: ["tooltip"],
+    check: ({ text }) => {
+      if (normalize(text).length <= 150) return;
+      return {
+        category: "ux_writing",
+        severity: "low",
+        title: "Tooltip is long",
+        explanation: "Tooltips should explain one unfamiliar concept in a sentence. Move required information into the screen itself.",
+        confidence: 0.7,
+        guideRef: ref("Tooltips", "Use tooltips to explain unfamiliar concepts, not required information."),
+        checklist: "concise",
+        needsContext: true
+      };
+    }
+  });
+  var componentRules = [
+    vagueCta,
+    ctaNotVerbFirst,
+    buttonTooLong,
+    errorGeneric,
+    errorNoNextStep,
+    errorTone,
+    dialogVagueTitle,
+    destructiveNoConsequence,
+    emptyStateIncomplete,
+    successVerbose,
+    snackbarTooLong,
+    tooltipTooLong
+  ];
+
+  // ../../packages/copy-engine/src/rules/language.ts
+  var wordy = defineRule({
+    id: "WORDY_PHRASE",
+    skip: ["alt_text"],
+    check: ({ text }) => {
+      const hits = WORDY.filter(([re]) => {
+        re.lastIndex = 0;
+        return re.test(text);
+      });
+      if (hits.length === 0) return;
+      const pairs = hits.map(([re, to]) => {
+        re.lastIndex = 0;
+        const from = re.exec(text)?.[0] ?? "";
+        re.lastIndex = 0;
+        return `"${from}" \u2192 ${to ? `"${to}"` : "remove"}`;
+      });
+      return {
+        category: "ux_writing",
+        severity: "low",
+        title: "Wordy phrase",
+        explanation: `Shorter, common words scan faster: ${pairs.join(", ")}.`,
+        confidence: 0.9,
+        guideRef: ref("Word Choice Rules", "Use common words. Be concise, but not robotic."),
+        checklist: "concise",
+        patch: (s) => tidy(WORDY.reduce((acc, [re, to]) => acc.replace(re, (m) => to ? matchCase(m, to) : ""), s)),
+        autoApplicable: true
+      };
+    }
+  });
+  var filler = defineRule({
+    id: "FILLER_WORD",
+    check: ({ text }) => {
+      FILLER.lastIndex = 0;
+      const found = text.match(FILLER);
+      if (!found) return;
+      return {
+        category: "brand_voice",
+        severity: "low",
+        title: "Filler word",
+        explanation: `${found.map((f) => `"${f.trim()}"`).join(", ")} adds nothing, and "simply" or "just" can make a task that feels hard sound trivial.`,
+        confidence: 0.85,
+        guideRef: ref("Word Choice Rules", "Avoid marketing fluff."),
+        checklist: "concise",
+        patch: (s) => tidy(s.replace(FILLER, "")),
+        autoApplicable: true
+      };
+    }
+  });
+  var fluff = defineRule({
+    id: "MARKETING_FLUFF",
+    check: ({ text }) => {
+      const m = FLUFF.exec(text);
+      if (!m) return;
+      return {
+        category: "brand_voice",
+        severity: "low",
+        title: "Marketing language",
+        explanation: `"${m[0]}" sounds like marketing rather than product communication. Say what the feature does instead.`,
+        confidence: 0.75,
+        guideRef: ref("Word Choice Rules", "Avoid marketing fluff."),
+        checklist: "familiar",
+        needsContext: true
+      };
+    }
+  });
+  var jargon = defineRule({
+    id: "JARGON",
+    skip: ["alt_text"],
+    check: ({ text }) => {
+      const hits = JARGON.filter(([re]) => {
+        re.lastIndex = 0;
+        return re.test(text);
+      });
+      if (hits.length === 0) return;
+      const fixable = hits.filter(([, to]) => to !== null);
+      return {
+        category: "ux_writing",
+        severity: "medium",
+        title: "Technical or internal language",
+        explanation: `${hits.map(([, , term]) => `"${term}"`).join(", ")} ${hits.length > 1 ? "are" : "is"} internal or technical language. Use words the user already knows.`,
+        confidence: 0.8,
+        guideRef: ref("Core Principles", "Avoid jargon unless the user already understands it. Write for real users, not internal teams."),
+        checklist: "jargon",
+        patch: fixable.length ? (s) => tidy(
+          fixable.reduce(
+            (acc, [re, to]) => acc.replace(/\bthe user['’]s\b/gi, (m) => matchCase(m, "your")).replace(re, (m) => matchCase(m, to)),
+            s
+          )
+        ) : void 0
+      };
+    }
+  });
+  var PASSIVE = /\b(is|are|was|were|be|been|being)\s+(?:\w+ly\s+)?(\w+ed|made|done|sent|shown|given|taken|seen|found|lost|kept|built|paid|written|chosen|known)\b/i;
+  var ADJECTIVAL = /* @__PURE__ */ new Set(["required", "needed", "supported", "allowed", "located", "based", "interested", "connected", "logged", "signed", "used", "limited", "disabled", "enabled", "expired", "verified", "selected", "saved", "added", "completed", "shown", "done", "finished", "closed", "locked", "blocked"]);
+  var passive = defineRule({
+    id: "PASSIVE_VOICE",
+    on: ["error", "body", "helper_text", "empty_state", "dialog", "banner", "onboarding", "notification", "tooltip"],
+    check: ({ text, type }) => {
+      if (type === "error" && isGenericError(text)) return;
+      const m = PASSIVE.exec(text);
+      if (!m || ADJECTIVAL.has(m[2].toLowerCase())) return;
+      return {
+        category: "ux_writing",
+        severity: type === "error" ? "medium" : "low",
+        title: "Passive voice",
+        explanation: `"${m[0]}" hides who does what. Active voice is clearer: say who acts, the user or the product.`,
+        confidence: 0.65,
+        guideRef: ref("Word Choice Rules", "Use active voice."),
+        checklist: "clear",
+        needsContext: true
+      };
+    }
+  });
+  var FUTURE = /\b(\w+)\s+will\s+(appear|show up|be (?:shown|displayed|listed|visible|available))\b/i;
+  var futureTense = defineRule({
+    id: "FUTURE_TENSE",
+    on: ["helper_text", "empty_state", "body", "onboarding", "tooltip", "banner", "success", "notification"],
+    check: ({ text }) => {
+      const m = FUTURE.exec(text);
+      if (!m) return;
+      const plural2 = /[^s]s$/i.test(m[1]) && !/^(this|its|is|has|was)$/i.test(m[1]);
+      const verb = m[2].toLowerCase();
+      const present = /^(appear|show up)$/.test(verb) ? plural2 ? verb : verb.replace(/^(\w+)/, "$1s") : /visible|available/.test(verb) ? `${plural2 ? "are" : "is"} ${verb.split(" ")[1]}` : plural2 ? "appear" : "appears";
+      return {
+        category: "language",
+        severity: "low",
+        title: "Future tense for product behavior",
+        explanation: `Describe what the product does in the present tense: "${m[1]} ${present}" rather than "${m[0]}".`,
+        confidence: 0.75,
+        guideRef: ref("Core Principles", "Use present tense for product behavior."),
+        checklist: "clear",
+        patch: (s) => s.replace(FUTURE, (_, subj) => `${subj} ${present}`)
+      };
+    }
+  });
+  var NUMBER_RE = new RegExp(`\\b(${Object.keys(NUMBER_WORDS).join("|")})\\b(?=\\s+[a-z])`, "gi");
+  var writtenNumbers = defineRule({
+    id: "WRITTEN_NUMBER",
+    check: ({ text }) => {
+      NUMBER_RE.lastIndex = 0;
+      const found = text.match(NUMBER_RE);
+      if (!found) return;
+      return {
+        category: "language",
+        severity: "low",
+        title: "Number written as a word",
+        explanation: `Numerals scan faster in an interface: ${found.map((f) => `"${f}" \u2192 "${NUMBER_WORDS[f.toLowerCase()]}"`).join(", ")}.`,
+        confidence: 0.85,
+        guideRef: ref("Word Choice Rules", "Use numerals instead of written numbers."),
+        checklist: "clear",
+        patch: (s) => s.replace(NUMBER_RE, (m) => NUMBER_WORDS[m.toLowerCase()] ?? m),
+        autoApplicable: true
+      };
+    }
+  });
+  var longSentence = defineRule({
+    id: "LONG_SENTENCE",
+    skip: ["alt_text"],
+    check: ({ text }) => {
+      const long = lines(text).flatMap(sentences).find((s) => words(s).length > 25);
+      if (!long) return;
+      return {
+        category: "ux_writing",
+        severity: "medium",
+        title: "Sentence carries too many ideas",
+        explanation: `One sentence has ${words(long).length} words. Split it so each sentence carries one idea.`,
+        confidence: 0.8,
+        guideRef: ref("Word Choice Rules", "Avoid multiple ideas in one sentence."),
+        checklist: "concise",
+        needsContext: true
+      };
+    }
+  });
+  var myYourMixed = defineRule({
+    id: "MY_YOUR_MIXED",
+    check: ({ text }) => {
+      if (!/\bmy\b/i.test(text) || !/\byour\b/i.test(text)) return;
+      return {
+        category: "consistency",
+        severity: "medium",
+        title: 'Mixes "my" and "your"',
+        explanation: 'Switching between "my" and "your" makes it unclear who is speaking. Pick one point of view.',
+        confidence: 0.85,
+        guideRef: ref("Word Choice Rules", "Avoid mixing \u201Cmy\u201D and \u201Cyour\u201D."),
+        checklist: "consistent",
+        patch: (s) => s.replace(/\bmy\b/gi, (m) => matchCase(m, "your"))
+      };
+    }
+  });
+  var repeatedWord = defineRule({
+    id: "REPEATED_WORD",
+    check: ({ text }) => {
+      const m = /\b(\w+)\s+\1\b/i.exec(text);
+      if (!m || /^\d+$/.test(m[1])) return;
+      return {
+        category: "language",
+        severity: "high",
+        title: "Repeated word",
+        explanation: `"${m[0]}" repeats a word.`,
+        confidence: 0.95,
+        guideRef: ref("Core Principles", "Write simply."),
+        checklist: "clear",
+        patch: (s) => s.replace(/\b(\w+)\s+\1\b/gi, "$1"),
+        autoApplicable: true
+      };
+    }
+  });
+  var punctuation = defineRule({
+    id: "PUNCTUATION",
+    check: ({ text, type }) => {
+      const issues = [];
+      const t = text.trim();
+      const trailingPeriod = SHORT_UI.includes(type) && /[^.]\.$/.test(t) && lines(t).length === 1 && sentences(t).length === 1;
+      if (trailingPeriod) issues.push("short UI labels don't end with a period");
+      if (/[!?]{2,}/.test(t)) issues.push("use one punctuation mark, not several");
+      if (/\.{3}/.test(t)) issues.push('use an ellipsis character ("\u2026") instead of three periods');
+      if (/[^\s] {2,}[^\s]/.test(t)) issues.push("remove the double space");
+      if (issues.length === 0) return;
+      return {
+        category: "language",
+        severity: "low",
+        title: "Punctuation",
+        explanation: capitalize(`${issues.join("; ")}.`),
+        confidence: 0.9,
+        guideRef: ref("Component-Specific Rules", "Keep labels short and clean, as in the guide's examples."),
+        checklist: "consistent",
+        patch: (s) => {
+          let out = s.replace(/([!?])[!?]+/g, "$1").replace(/\.{3}/g, "\u2026").replace(/([^\s]) {2,}(?=[^\s])/g, "$1 ");
+          if (trailingPeriod) out = out.trim().replace(/\.$/, "");
+          return out;
+        },
+        autoApplicable: true
+      };
+    }
+  });
+  var CASE_TYPES = [...SHORT_UI, "snackbar", "empty_state", "error", "success", "banner", "dialog"];
+  var capitalization = defineRule({
+    id: "CAPITALIZATION",
+    on: [...CASE_TYPES],
+    check: ({ text, settings }) => {
+      const [first = ""] = lines(text);
+      if (!isTitleCase(first) || isAllCaps(first)) return;
+      const keep = (settings.terms ?? []).flatMap((t) => words(t.use));
+      return {
+        category: "consistency",
+        severity: "low",
+        title: "Title Case instead of sentence case",
+        explanation: 'Every example in the guide uses sentence case ("Save changes", "Connect wallet"). Keep capitals for the first word and proper nouns.',
+        confidence: 0.7,
+        guideRef: ref("Component-Specific Rules", "Sentence case, as in all of the guide's examples."),
+        checklist: "consistent",
+        patch: (s) => {
+          const [head = "", ...rest] = s.split("\n");
+          return [toSentenceCase(head, keep), ...rest].join("\n");
+        }
+      };
+    }
+  });
+  var allCaps = defineRule({
+    id: "ALL_CAPS",
+    skip: ["button", "tab", "label", "navigation"],
+    check: ({ text }) => {
+      if (!isAllCaps(text)) return;
+      return {
+        category: "accessibility",
+        severity: "medium",
+        title: "All caps",
+        explanation: "Long runs of capitals are harder to read, can come across as shouting, and some screen readers spell them out letter by letter.",
+        confidence: 0.8,
+        guideRef: ref("Accessibility Rules", "Always consider screen reader labels."),
+        checklist: "accessible",
+        patch: (s) => tidy(s.toLowerCase())
+      };
+    }
+  });
+  var altTextPrefix = defineRule({
+    id: "ALT_TEXT_PREFIX",
+    check: ({ text }) => {
+      if (!ALT_PREFIX.test(text.trim())) return;
+      return {
+        category: "accessibility",
+        severity: "medium",
+        title: 'Alt text starts with "Image of"',
+        explanation: "Screen readers already announce images. Describe the essential meaning directly.",
+        confidence: 0.95,
+        guideRef: ref("Accessibility Rules", "Alt text should describe the essential meaning without saying \u201Cimage of\u201D or \u201Cpicture of\u201D."),
+        checklist: "accessible",
+        patch: (s) => capitalize(s.trim().replace(ALT_PREFIX, "").replace(/^(a|an|the)\s+/i, "")),
+        autoApplicable: true
+      };
+    }
+  });
+  var linkClarity = defineRule({
+    id: "LINK_CLARITY",
+    skip: ["button"],
+    check: ({ text }) => {
+      if (!LINK_VAGUE.test(text)) return;
+      return {
+        category: "accessibility",
+        severity: "medium",
+        title: '"Click here" link',
+        explanation: 'Screen reader users often jump between links, so "click here" means nothing out of context. Make the link text name its destination.',
+        confidence: 0.85,
+        guideRef: ref("Accessibility Rules", "Link clarity."),
+        checklist: "accessible",
+        needsContext: true
+      };
+    }
+  });
+  var colorOnly = defineRule({
+    id: "COLOR_ONLY",
+    check: ({ text }) => {
+      const m = COLOR_ONLY.exec(text);
+      if (!m) return;
+      return {
+        category: "accessibility",
+        severity: "medium",
+        title: "Meaning depends on color",
+        explanation: `"${m[0]}" relies on color, which not everyone can see. Name the item or its state instead.`,
+        confidence: 0.8,
+        guideRef: ref("Accessibility Rules", "Color-independent meaning."),
+        checklist: "accessible",
+        needsContext: true
+      };
+    }
+  });
+  var directional = defineRule({
+    id: "DIRECTIONAL_LANGUAGE",
+    check: ({ text }) => {
+      const m = DIRECTIONAL.exec(text);
+      if (!m) return;
+      return {
+        category: "accessibility",
+        severity: "low",
+        title: "Relies on screen position",
+        explanation: `"${m[0]}" assumes a visual layout that changes across screen sizes and screen readers. Refer to the control by its visible label.`,
+        confidence: 0.7,
+        guideRef: ref("Core Principles", "Refer to UI controls by their visible label."),
+        checklist: "accessible",
+        needsContext: true
+      };
+    }
+  });
+  var characterLimit = defineRule({
+    id: "CHARACTER_LIMIT",
+    check: ({ node, text }) => {
+      if (!node.maxCharacters || text.trim().length <= node.maxCharacters) return;
+      return {
+        category: "product_ux",
+        severity: "high",
+        title: "Doesn't fit the space",
+        explanation: `${text.trim().length} characters in a space that fits about ${node.maxCharacters}.`,
+        confidence: 0.9,
+        guideRef: ref("Word Choice Rules", "Avoid long explanations inside small components."),
+        checklist: "concise",
+        needsContext: true
+      };
+    }
+  });
+  var languageRules = [
+    wordy,
+    filler,
+    fluff,
+    jargon,
+    passive,
+    futureTense,
+    writtenNumbers,
+    longSentence,
+    myYourMixed,
+    repeatedWord,
+    punctuation,
+    capitalization,
+    allCaps,
+    altTextPrefix,
+    linkClarity,
+    colorOnly,
+    directional,
+    characterLimit
+  ];
+
+  // ../../packages/copy-engine/src/rules/settings.ts
+  var terminology = defineRule({
+    id: "PREFERRED_TERM",
+    check: ({ text, settings }) => (settings.terms ?? []).flatMap((term) => {
+      const flags = term.caseSensitive ? "g" : "gi";
+      const used = term.insteadOf.filter((w) => phraseRegExp(w, flags).test(text));
+      if (used.length === 0) return [];
+      return [
+        {
+          category: "consistency",
+          severity: "medium",
+          title: "Use the preferred term",
+          explanation: `Your terms list says to use "${term.use}" instead of ${used.map((u) => `"${u}"`).join(", ")}.`,
+          confidence: 0.95,
+          guideRef: ref("Core Principles", "Use consistent terms across the product."),
+          checklist: "consistent",
+          patch: (s) => used.reduce((acc, w) => acc.replace(phraseRegExp(w, flags), (m) => matchCase(m, term.use)), s),
+          autoApplicable: true
+        }
+      ];
+    })
+  });
+  var avoidWords = defineRule({
+    id: "AVOID_WORD",
+    check: ({ text, settings }) => {
+      const used = (settings.avoid ?? []).filter((w) => phraseRegExp(w).test(text));
+      if (used.length === 0) return;
+      return {
+        category: "brand_voice",
+        severity: "medium",
+        title: "Word on your avoid list",
+        explanation: `Your voice settings avoid ${used.map((u) => `"${u}"`).join(", ")}.`,
+        confidence: 0.95,
+        guideRef: ref("Tone Mapping", "Match tone to context."),
+        checklist: "tone",
+        patch: (s) => tidy(used.reduce((acc, w) => acc.replace(phraseRegExp(w), ""), s))
+      };
+    }
+  });
+  var settingsRules = [terminology, avoidWords];
+  function inconsistentTerms(reviews, settings) {
+    const findings = [];
+    for (const group of SYNONYM_GROUPS) {
+      const configured = (settings.terms ?? []).some((t) => group.includes(t.use.toLowerCase()));
+      if (configured) continue;
+      const usage = group.map((variant) => ({
+        variant,
+        nodes: reviews.filter((r) => phraseRegExp(variant).test(r.node.text))
+      }));
+      const used = usage.filter((u) => u.nodes.length > 0);
+      if (used.length < 2) continue;
+      const preferred = [...used].sort((a, b) => b.nodes.length - a.nodes.length || group.indexOf(a.variant) - group.indexOf(b.variant))[0];
+      for (const other of used) {
+        if (other === preferred) continue;
+        for (const r of other.nodes) {
+          const patch = (s) => s.replace(phraseRegExp(other.variant), (m) => matchCase(m, preferred.variant));
+          const suggestion = patch(r.node.text);
+          findings.push({ patch, finding: {
+            id: `${r.node.id}:INCONSISTENT_TERM:${other.variant}`,
+            nodeId: r.node.id,
+            ruleId: "INCONSISTENT_TERM",
+            category: "consistency",
+            severity: "medium",
+            title: "Inconsistent term",
+            explanation: `This audit uses both "${preferred.variant}" (${preferred.nodes.length}\xD7) and "${other.variant}" (${other.nodes.length}\xD7). Pick one and use it everywhere.`,
+            originalText: r.node.text,
+            suggestion,
+            confidence: 0.8,
+            guideRef: ref("Core Principles", "Use consistent terms across the product."),
+            checklist: "consistent",
+            autoApplicable: false
+          } });
+        }
+      }
+    }
+    return findings;
+  }
+
+  // ../../packages/copy-engine/src/review.ts
+  var RULES = [...componentRules, ...languageRules, ...settingsRules];
+  var SEVERITY_RANK = { critical: 0, high: 1, medium: 2, low: 3 };
+  var CONFIDENCE_THRESHOLD = 0.6;
+  function runRules(ctx) {
+    const out = [];
+    for (const rule of RULES) {
+      if (rule.on && !rule.on.includes(ctx.type)) continue;
+      if (rule.skip?.includes(ctx.type)) continue;
+      const result = rule.check(ctx);
+      if (!result) continue;
+      for (const d of Array.isArray(result) ? result : [result]) out.push({ ...d, ruleId: rule.id });
+    }
+    return out;
+  }
+  var same = (a, b) => normalize(a) === normalize(b);
+  function combine(drafts, ctx) {
+    const rewrite = [...drafts].filter((d) => d.rewrite).sort((a, b) => SEVERITY_RANK[a.severity] - SEVERITY_RANK[b.severity])[0]?.rewrite;
+    let text = rewrite ?? ctx.text;
+    let pending = rewrite ? runRules({ ...ctx, text }) : drafts;
+    for (let pass = 0; pass < 3; pass++) {
+      const patches = pending.filter((d) => d.patch);
+      if (patches.length === 0) break;
+      const next = tidy(patches.reduce((acc, d) => d.patch(acc), text));
+      if (next === text) break;
+      text = next;
+      pending = runRules({ ...ctx, text });
+    }
+    return same(text, ctx.text) ? void 0 : text;
+  }
+  function validate(original, suggestion, node, type, settings) {
+    const reasons = [];
+    const remaining = runRules({ node, type, text: suggestion, settings }).filter(
+      (d) => (d.severity === "critical" || d.severity === "high") && !d.needsContext
+    );
+    for (const d of remaining) reasons.push(`Still has an issue: ${d.title.toLowerCase()}`);
+    if (node.maxCharacters && suggestion.length > node.maxCharacters)
+      reasons.push(`Longer than the ${node.maxCharacters}-character space`);
+    const missing = protectedTokens(original).filter((t) => !suggestion.includes(t));
+    if (missing.length) reasons.push(`Drops ${missing.map((m) => `"${m}"`).join(", ")} from the original`);
+    for (const w of settings.avoid ?? []) if (phraseRegExp(w).test(suggestion)) reasons.push(`Uses "${w}" from your avoid list`);
+    for (const t of settings.terms ?? [])
+      for (const w of t.insteadOf)
+        if (phraseRegExp(w, t.caseSensitive ? "g" : "gi").test(suggestion)) reasons.push(`Uses "${w}" instead of "${t.use}"`);
+    return { passed: reasons.length === 0, reasons };
+  }
+  var emptyChecklist = () => Object.fromEntries(Object.keys(CHECKLIST).map((k) => [k, true]));
+  function reviewNode(node, settings = {}) {
+    const classified = node.componentType ? { type: node.componentType, inferred: false } : classify(node.text, node.name);
+    const ctx = { node, type: classified.type, text: node.text, settings };
+    const drafts = runRules(ctx);
+    const findings = drafts.map((d, i) => {
+      const own = d.rewrite ?? (d.patch ? tidy(d.patch(node.text)) : void 0);
+      return {
+        id: `${node.id}:${d.ruleId}:${i}`,
+        nodeId: node.id,
+        ruleId: d.ruleId,
+        category: d.category,
+        severity: d.severity,
+        title: d.title,
+        explanation: d.explanation,
+        originalText: node.text,
+        suggestion: own && !same(own, node.text) ? own : void 0,
+        alternatives: d.alternatives,
+        confidence: d.confidence,
+        guideRef: d.guideRef,
+        checklist: d.checklist,
+        autoApplicable: Boolean(d.autoApplicable),
+        needsContext: d.needsContext
+      };
+    });
+    const checklist = emptyChecklist();
+    for (const f of findings) checklist[f.checklist] = false;
+    const suggestion = combine(drafts, ctx);
+    const contributing = findings.filter((f) => f.suggestion);
+    let confidence = contributing.length ? contributing.reduce((sum, f) => sum + f.confidence, 0) / contributing.length : 0;
+    const validation = suggestion ? validate(node.text, suggestion, node, classified.type, settings) : void 0;
+    if (validation && !validation.passed) confidence = Math.min(confidence, 0.5);
+    return {
+      node,
+      componentType: classified.type,
+      componentInferred: classified.inferred,
+      findings,
+      suggestion,
+      confidence: Math.round(confidence * 100) / 100,
+      validation,
+      checklist
+    };
+  }
+  function reviewCopy(nodes, settings = {}) {
+    const reviews = nodes.filter((n) => n.text.trim()).map((n) => reviewNode(n, settings));
+    for (const { finding, patch } of inconsistentTerms(reviews, settings)) {
+      const r = reviews.find((rv) => rv.node.id === finding.nodeId);
+      r.findings.push(finding);
+      r.checklist.consistent = false;
+      r.suggestion = patch(r.suggestion ?? r.node.text);
+      r.confidence = r.confidence || finding.confidence;
+    }
+    const findings = reviews.flatMap((r) => r.findings).sort((a, b) => SEVERITY_RANK[a.severity] - SEVERITY_RANK[b.severity] || b.confidence - a.confidence);
+    const counts = { critical: 0, high: 0, medium: 0, low: 0 };
+    for (const f of findings) counts[f.severity]++;
+    const failed = new Set(findings.map((f) => f.checklist));
+    const passedChecks = Object.keys(CHECKLIST).filter((k) => !failed.has(k));
+    return { reviews, findings, counts, passedChecks };
+  }
+
+  // src/ui.ts
+  var SEV = ["critical", "high", "medium", "low"];
+  var rank = (s) => SEV.indexOf(s);
+  var state = {
+    tab: "audit",
+    scope: "selection",
+    scopeTouched: false,
+    summary: { textLayers: 0, label: "Nothing selected" },
+    settings: {},
+    status: "idle",
+    progress: { done: 0, total: 0 },
+    auditScope: "selection",
+    layers: [],
+    skippedHidden: 0,
+    result: void 0,
+    groups: [],
+    filter: "all",
+    open: void 0,
+    editing: void 0,
+    draft: "",
+    dismissed: /* @__PURE__ */ new Set(),
+    applied: /* @__PURE__ */ new Map(),
+    error: void 0
+  };
+  var send = (msg) => parent.postMessage({ pluginMessage: msg }, "*");
+  var esc = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  var plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+  var KIND = {
+    button: "Button",
+    label: "Label",
+    form_field: "Form field",
+    helper_text: "Helper text",
+    heading: "Heading",
+    body: "Body text",
+    navigation: "Navigation",
+    tab: "Tab",
+    empty_state: "Empty state",
+    error: "Error message",
+    success: "Success message",
+    snackbar: "Snackbar",
+    banner: "Banner",
+    dialog: "Dialog",
+    dialog_title: "Dialog title",
+    tooltip: "Tooltip",
+    onboarding: "Onboarding",
+    confirmation: "Confirmation",
+    notification: "Notification",
+    loading: "Loading",
+    alt_text: "Alt text",
+    unknown: "Text"
+  };
+  function diff(a, b) {
+    const A = a.split(/(\s+)/);
+    const B = b.split(/(\s+)/);
+    const dp = Array.from({ length: A.length + 1 }, () => new Array(B.length + 1).fill(0));
+    for (let i2 = A.length - 1; i2 >= 0; i2--)
+      for (let j2 = B.length - 1; j2 >= 0; j2--)
+        dp[i2][j2] = A[i2] === B[j2] ? dp[i2 + 1][j2 + 1] + 1 : Math.max(dp[i2 + 1][j2], dp[i2][j2 + 1]);
+    let i = 0;
+    let j = 0;
+    let before = "";
+    let after = "";
+    while (i < A.length && j < B.length) {
+      if (A[i] === B[j]) {
+        before += esc(A[i]);
+        after += esc(B[j]);
+        i++;
+        j++;
+      } else if (dp[i + 1][j] >= dp[i][j + 1]) {
+        before += /^\s+$/.test(A[i]) ? esc(A[i]) : `<del>${esc(A[i])}</del>`;
+        i++;
+      } else {
+        after += /^\s+$/.test(B[j]) ? esc(B[j]) : `<ins>${esc(B[j])}</ins>`;
+        j++;
+      }
+    }
+    for (; i < A.length; i++) before += /^\s+$/.test(A[i]) ? esc(A[i]) : `<del>${esc(A[i])}</del>`;
+    for (; j < B.length; j++) after += /^\s+$/.test(B[j]) ? esc(B[j]) : `<ins>${esc(B[j])}</ins>`;
+    return { before, after };
+  }
+  function buildGroups() {
+    const result = reviewCopy(state.layers, state.settings);
+    state.result = result;
+    const byKey = /* @__PURE__ */ new Map();
+    for (const r of result.reviews) {
+      if (r.findings.length === 0) continue;
+      const key = `${r.componentType}|${r.node.text.trim()}`;
+      const layer = state.layers.find((l) => l.id === r.node.id);
+      const g = byKey.get(key);
+      if (g) {
+        g.reviews.push(r);
+        g.layers.push(layer);
+      } else {
+        const findings = [...r.findings].sort((a, b) => rank(a.severity) - rank(b.severity));
+        byKey.set(key, {
+          key,
+          reviews: [r],
+          layers: [layer],
+          findings,
+          severity: findings[0].severity,
+          confidence: Math.max(...findings.map((f) => f.confidence))
+        });
+      }
+    }
+    state.groups = [...byKey.values()].sort(
+      (a, b) => rank(a.severity) - rank(b.severity) || b.layers.length - a.layers.length
+    );
+  }
+  var suggestionOf = (g) => g.reviews[0].suggestion;
+  var validationOf = (g) => g.reviews[0].validation;
+  function isSafe(g) {
+    const v = validationOf(g);
+    return Boolean(
+      suggestionOf(g) && v?.passed && g.findings.every((f) => f.autoApplicable) && g.layers.every((l) => !l.mixedStyle && !l.inMainComponent) && g.confidence >= CONFIDENCE_THRESHOLD
+    );
+  }
+  var visibleGroups = () => state.groups.filter((g) => !state.dismissed.has(g.key));
+  function applyGroup(g, text) {
+    state.applied.set(g.key, text);
+    send({ type: "APPLY", changes: g.layers.map((l) => ({ nodeId: l.id, text })) });
+  }
+  var app = document.getElementById("app");
+  function render() {
+    const scrollEl = app.querySelector(".scroll");
+    const scrollTop = scrollEl?.scrollTop ?? 0;
+    app.innerHTML = `
+    <header class="top">
+      <div class="brand"><span class="brand-mark"></span>CopyPilot</div>
+      <nav class="tabs" role="tablist">
+        <button class="tab" role="tab" data-action="tab" data-tab="audit" aria-selected="${state.tab === "audit"}">Audit</button>
+        <button class="tab" role="tab" data-action="tab" data-tab="rules" aria-selected="${state.tab === "rules"}">Rules</button>
+      </nav>
+    </header>
+    ${state.error ? `<div class="error-banner">${esc(state.error)}</div>` : ""}
+    ${state.tab === "rules" ? renderRules() : state.status === "done" ? renderResults() : renderStart()}
+  `;
+    const next = app.querySelector(".scroll");
+    if (next) next.scrollTop = scrollTop;
+    const ta = app.querySelector("textarea[data-draft]");
+    if (ta && document.activeElement !== ta) {
+      ta.focus();
+      ta.setSelectionRange(ta.value.length, ta.value.length);
+    }
+  }
+  function renderStart() {
+    const s = state.summary;
+    const running = state.status === "running";
+    const pct = state.progress.total ? Math.round(state.progress.done / state.progress.total * 100) : 0;
+    const canRun = state.scope === "page" || s.textLayers > 0;
+    return `
+    <div class="scroll"><div class="pad">
+      <p class="section-label">Scope</p>
+      <div class="segmented">
+        <button data-action="scope" data-scope="selection" aria-pressed="${state.scope === "selection"}">Selection</button>
+        <button data-action="scope" data-scope="page" aria-pressed="${state.scope === "page"}">Current page</button>
+      </div>
+      <div class="selection-card">
+        ${state.scope === "page" ? `<strong>Every text layer on this page</strong><span class="muted small">Hidden layers are skipped</span>` : s.textLayers ? `<strong>${esc(s.label)}</strong><span class="muted small">${plural(s.textLayers, "text layer")}</span>` : `<strong>Nothing to audit yet</strong><span class="muted small">Select a text layer or frame to start an audit.</span>`}
+      </div>
+      <button class="btn btn-primary btn-block" data-action="run" ${!canRun || running ? "disabled" : ""}>
+        ${running ? "Reading layers\u2026" : "Run audit"}
+      </button>
+      ${running ? `<div class="progress"><div style="width:${pct}%"></div></div><p class="muted small">${state.progress.done} of ${state.progress.total} layers</p>` : ""}
+      <div class="guide-note">
+        <span>\u24D8</span>
+        <span>Copy is checked against the ${GUIDE_NAME}. Everything runs inside Figma, and no text leaves your file.</span>
+      </div>
+    </div></div>`;
+  }
+  function renderResults() {
+    const groups = visibleGroups();
+    const layerCount = state.layers.length;
+    if (groups.length === 0) return renderAllClear(layerCount);
+    const count = (s) => groups.filter((g) => g.severity === s).length;
+    const shown = groups.filter((g) => state.filter === "all" || g.severity === state.filter);
+    const confident = shown.filter((g) => g.confidence >= CONFIDENCE_THRESHOLD);
+    const possible = shown.filter((g) => g.confidence < CONFIDENCE_THRESHOLD);
+    const safe = groups.filter((g) => isSafe(g) && !state.applied.has(g.key));
+    const appliedCount = groups.filter((g) => state.applied.has(g.key)).length;
+    return `
+    <div class="summary">
+      <div class="summary-head">
+        <h2>${plural(groups.length, "issue")}</h2>
+        <span class="muted small">in ${plural(layerCount, "layer")}${state.skippedHidden ? ` \xB7 ${state.skippedHidden} hidden skipped` : ""}</span>
+        <button class="btn" data-action="rerun" title="Run the audit again">\u21BB Re-run</button>
+      </div>
+      <div class="chips">
+        <button class="chip" data-action="filter" data-sev="all" aria-pressed="${state.filter === "all"}">All ${groups.length}</button>
+        ${SEV.filter((s) => count(s)).map((s) => `<button class="chip" data-action="filter" data-sev="${s}" aria-pressed="${state.filter === s}"><span class="dot ${s}"></span>${s[0].toUpperCase() + s.slice(1)} ${count(s)}</button>`).join("")}
+        <button class="chip" data-action="back">Change scope</button>
+      </div>
+    </div>
+    <div class="scroll">
+      ${confident.map(renderRow).join("")}
+      ${possible.length ? `<details class="possible" ${confident.length === 0 ? "open" : ""}><summary>Possible improvements (${possible.length}), where the screen gives too little context for a confident fix</summary>${possible.map(renderRow).join("")}</details>` : ""}
+    </div>
+    <div class="footer">
+      <button class="btn btn-primary" data-action="apply-safe" ${safe.length ? "" : "disabled"}>Apply ${plural(safe.length, "safe fix")}</button>
+      <span class="muted">${appliedCount} of ${groups.length} resolved</span>
+    </div>`;
+  }
+  function renderRow(g) {
+    const r = g.reviews[0];
+    const open = state.open === g.key;
+    const applied = state.applied.get(g.key);
+    const top = g.findings[0];
+    const more = g.findings.length - 1;
+    return `
+    <div class="row ${open ? "open" : ""} ${applied ? "applied" : ""}">
+      <button class="row-head" data-action="toggle" data-key="${esc(g.key)}">
+        <span class="dot ${g.severity}"></span>
+        <span class="row-main">
+          <span class="row-kind">${KIND[r.componentType] ?? "Text"}${g.layers[0].frame ? ` \xB7 ${esc(g.layers[0].frame)}` : ""}</span>
+          <span class="row-text">${esc(applied ?? r.node.text)}</span>
+          ${applied ? `<span class="applied-tag">\u2713 Applied \xB7 \u2318Z in Figma to undo</span>` : `<span class="row-title">${esc(top.title)}${more ? ` \xB7 +${more} more` : ""}</span>`}
+        </span>
+        ${g.layers.length > 1 ? `<span class="badge">${g.layers.length} layers</span>` : ""}
+        <span class="chev">\u203A</span>
+      </button>
+      ${open ? renderCard(g) : ""}
+    </div>`;
+  }
+  function renderCard(g) {
+    const r = g.reviews[0];
+    const original = r.node.text;
+    const suggestion = suggestionOf(g);
+    const validation = validationOf(g);
+    const editing = state.editing === g.key;
+    const applied = state.applied.has(g.key);
+    const alts = [...new Set(g.findings.flatMap((f) => f.alternatives ?? []))];
+    const issues = g.findings.map(
+      (f) => `
+      <div class="issue">
+        <div class="issue-title"><span class="sev ${f.severity}">${f.severity}</span>${esc(f.title)}</div>
+        <p>${esc(f.explanation)}</p>
+        <div class="guide-ref">Guide \xB7 ${esc(f.guideRef.section)} \xB7 ${Math.round(f.confidence * 100)}%</div>
+      </div>`
+    ).join("");
+    let body;
+    if (editing) {
+      const check = reviewNode({ ...r.node, text: state.draft, componentType: r.componentType }, state.settings);
+      const d = diff(original, state.draft);
+      body = `
+      <textarea data-draft>${esc(state.draft)}</textarea>
+      <div class="diff"><div class="after"><span class="lbl">Change</span>${d.after || "&nbsp;"}</div></div>
+      <p class="note ${check.findings.length ? "" : "ok"}">${check.findings.length ? `Still flagged: ${esc(check.findings.map((f) => f.title.toLowerCase()).join(", "))}` : "\u2713 Meets the guide"}</p>
+      <div class="actions">
+        <button class="btn btn-primary" data-action="apply-draft" data-key="${esc(g.key)}" ${state.draft.trim() ? "" : "disabled"}>Apply${g.layers.length > 1 ? ` to ${g.layers.length} layers` : ""}</button>
+        <button class="btn btn-ghost" data-action="cancel-edit">Cancel</button>
+      </div>`;
+    } else {
+      const d = suggestion ? diff(original, suggestion) : void 0;
+      const notes = [];
+      if (validation && !validation.passed)
+        notes.push(`<p class="note bad">Not applied automatically: ${esc(validation.reasons.join("; "))}. Edit it first.</p>`);
+      if (g.layers.some((l) => l.mixedStyle))
+        notes.push(`<p class="note">This layer mixes text styles. Applying uses the first character's style for all of it.</p>`);
+      if (g.layers.some((l) => l.inMainComponent))
+        notes.push(`<p class="note">This text is in a main component, so the change reaches every instance.</p>`);
+      body = `
+      ${d ? `<div class="diff">
+               <div class="before"><span class="lbl">Current</span>${d.before}</div>
+               <div class="after"><span class="lbl">Suggested</span>${d.after}</div>
+             </div>` : `<p class="muted small">No automatic rewrite: fixing this needs details about the screen only you know. Use Edit to write your own.</p>`}
+      ${alts.length ? `<p class="section-label">Examples from the guide</p><div class="alts">${alts.map((a) => `<button data-action="use-alt" data-key="${esc(g.key)}" data-text="${esc(a)}">${esc(a.replace(/\n/g, " / "))}</button>`).join("")}</div>` : ""}
+      ${notes.join("")}
+      <div class="actions">
+        <button class="btn btn-primary" data-action="apply" data-key="${esc(g.key)}" ${suggestion && validation?.passed && !applied ? "" : "disabled"}>${applied ? "Applied" : `Apply${g.layers.length > 1 ? ` to ${g.layers.length} layers` : ""}`}</button>
+        <button class="btn" data-action="edit" data-key="${esc(g.key)}">Edit</button>
+        <button class="btn" data-action="select" data-key="${esc(g.key)}">Select in canvas</button>
+        <button class="btn btn-ghost" data-action="dismiss" data-key="${esc(g.key)}">Dismiss</button>
+      </div>`;
+    }
+    return `<div class="card">${issues}${body}</div>`;
+  }
+  function renderAllClear(layerCount) {
+    const failed = /* @__PURE__ */ new Set();
+    const keys = Object.keys(CHECKLIST);
+    return `
+    <div class="scroll"><div class="clear">
+      <div style="font-size:24px">\u2713</div>
+      <h2>No issues found in ${plural(layerCount, "layer")}</h2>
+      <p class="muted">${state.dismissed.size ? `${plural(state.dismissed.size, "issue")} dismissed. ` : ""}This copy meets the ${GUIDE_NAME}.</p>
+      <ul class="checks">${keys.map((k) => `<li><span class="${failed.has(k) ? "no" : "ok"}">\u2713</span>${CHECKLIST[k]}</li>`).join("")}</ul>
+      <div class="actions" style="justify-content:center;margin-top:16px">
+        <button class="btn" data-action="back">Audit something else</button>
+        ${state.auditScope === "selection" ? `<button class="btn btn-primary" data-action="run-page">Run on page</button>` : ""}
+      </div>
+    </div></div>`;
+  }
+  function renderRules() {
+    const terms = (state.settings.terms ?? []).map((t) => `${t.insteadOf.join(", ")} -> ${t.use}`).join("\n");
+    const avoid = (state.settings.avoid ?? []).join(", ");
+    return `
+    <div class="scroll"><div class="pad">
+      <div class="field">
+        <label for="terms">Terms</label>
+        <div class="hint">One per line: <code>Instead of -> Use</code>. Separate several variants with commas, e.g. <code>Log in, Login -> Sign in</code>.</div>
+        <textarea id="terms" rows="6" placeholder="Log in, Login -> Sign in&#10;E-mail -> Email">${esc(terms)}</textarea>
+      </div>
+      <div class="field">
+        <label for="avoid">Words to avoid</label>
+        <div class="hint">Comma-separated.</div>
+        <input type="text" id="avoid" placeholder="oops, whoops, kindly" value="${esc(avoid)}" />
+      </div>
+      <button class="btn btn-primary" data-action="save-rules">Save rules</button>
+      <span class="muted small" id="saved"></span>
+      <div class="guide-note" style="flex-direction:column">
+        <strong style="color:var(--text)">${GUIDE_NAME}</strong>
+        <span>Every audit checks copy against this checklist:</span>
+        <ul class="checks" style="margin:4px 0 0">${Object.keys(CHECKLIST).map((k) => `<li><span class="ok">\u2713</span>${CHECKLIST[k]}</li>`).join("")}</ul>
+      </div>
+    </div></div>`;
+  }
+  function parseTerms(src) {
+    return src.split("\n").map((line) => line.split(/->|→/)).filter((parts) => parts.length === 2 && parts[0].trim() && parts[1].trim()).map(([from, to]) => ({
+      insteadOf: from.split(",").map((s) => s.trim()).filter(Boolean),
+      use: to.trim()
+    }));
+  }
+  var groupByKey = (key) => state.groups.find((g) => g.key === key);
+  function run(scope) {
+    state.status = "running";
+    state.auditScope = scope;
+    state.progress = { done: 0, total: 0 };
+    state.open = void 0;
+    state.editing = void 0;
+    state.dismissed.clear();
+    state.applied.clear();
+    state.error = void 0;
+    send({ type: "AUDIT", scope });
+    render();
+  }
+  app.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-action]");
+    if (!el) return;
+    const g = groupByKey(el.dataset.key);
+    switch (el.dataset.action) {
+      case "tab":
+        state.tab = el.dataset.tab;
+        break;
+      case "scope":
+        state.scope = el.dataset.scope;
+        state.scopeTouched = true;
+        break;
+      case "run":
+        return run(state.scope);
+      case "rerun":
+        return run(state.auditScope);
+      case "run-page":
+        state.scope = "page";
+        return run("page");
+      case "back":
+        state.status = "idle";
+        break;
+      case "filter":
+        state.filter = el.dataset.sev;
+        break;
+      case "toggle":
+        state.open = state.open === el.dataset.key ? void 0 : el.dataset.key;
+        state.editing = void 0;
+        if (state.open && g) send({ type: "FOCUS", nodeIds: g.layers.map((l) => l.id) });
+        break;
+      case "select":
+        if (g) send({ type: "FOCUS", nodeIds: g.layers.map((l) => l.id) });
+        return;
+      case "apply": {
+        const text = g && suggestionOf(g);
+        if (g && text) applyGroup(g, text);
+        break;
+      }
+      case "apply-safe":
+        for (const sg of visibleGroups().filter((x) => isSafe(x) && !state.applied.has(x.key))) state.applied.set(sg.key, suggestionOf(sg));
+        send({
+          type: "APPLY",
+          changes: visibleGroups().filter((x) => state.applied.has(x.key) && isSafe(x)).flatMap((x) => x.layers.map((l) => ({ nodeId: l.id, text: state.applied.get(x.key) })))
+        });
+        break;
+      case "edit":
+        if (!g) return;
+        state.editing = g.key;
+        state.draft = suggestionOf(g) ?? g.reviews[0].node.text;
+        break;
+      case "use-alt":
+        if (!g) return;
+        state.editing = g.key;
+        state.draft = el.dataset.text ?? "";
+        break;
+      case "cancel-edit":
+        state.editing = void 0;
+        break;
+      case "apply-draft":
+        if (g && state.draft.trim()) {
+          applyGroup(g, state.draft);
+          state.editing = void 0;
+        }
+        break;
+      case "dismiss":
+        if (el.dataset.key) state.dismissed.add(el.dataset.key);
+        state.open = void 0;
+        break;
+      case "save-rules": {
+        const terms = parseTerms(document.getElementById("terms").value);
+        const avoid = document.getElementById("avoid").value.split(",").map((s) => s.trim()).filter(Boolean);
+        state.settings = { terms, avoid };
+        send({ type: "SAVE_SETTINGS", settings: state.settings });
+        if (state.layers.length) buildGroups();
+        render();
+        document.getElementById("saved").textContent = `  Saved ${plural(terms.length, "term")}, ${plural(avoid.length, "word")} to avoid.`;
+        return;
+      }
+    }
+    render();
+  });
+  app.addEventListener("input", (e) => {
+    const t = e.target;
+    if (t.matches("textarea[data-draft]")) {
+      state.draft = t.value;
+      const card = t.closest(".card");
+      const g = groupByKey(state.editing);
+      if (!card || !g) return;
+      const r = g.reviews[0];
+      const check = reviewNode({ ...r.node, text: state.draft, componentType: r.componentType }, state.settings);
+      const d = diff(r.node.text, state.draft);
+      card.querySelector(".diff .after").innerHTML = `<span class="lbl">Change</span>${d.after || "&nbsp;"}`;
+      card.querySelector(".note").textContent = check.findings.length ? `Still flagged: ${check.findings.map((f) => f.title.toLowerCase()).join(", ")}` : "\u2713 Meets the guide";
+      card.querySelector("[data-action=apply-draft]").disabled = !state.draft.trim();
+    }
+  });
+  window.onmessage = (e) => {
+    const msg = e.data?.pluginMessage;
+    if (!msg) return;
+    switch (msg.type) {
+      case "SELECTION":
+        state.summary = msg.summary;
+        if (!state.scopeTouched) state.scope = msg.summary.textLayers ? "selection" : "page";
+        if (state.status === "idle") render();
+        return;
+      case "SETTINGS":
+        state.settings = msg.settings;
+        return;
+      case "AUDIT_PROGRESS":
+        state.progress = { done: msg.done, total: msg.total };
+        break;
+      case "AUDIT_RESULT":
+        state.layers = msg.layers;
+        state.skippedHidden = msg.skippedHidden;
+        state.auditScope = msg.scope;
+        state.filter = "all";
+        buildGroups();
+        state.status = "done";
+        break;
+      case "APPLY_RESULT":
+        for (const f of msg.failed) {
+          const g = state.groups.find((x) => x.layers.some((l) => l.id === f.nodeId));
+          if (g) state.applied.delete(g.key);
+        }
+        state.error = msg.failed.length ? `Couldn't apply to ${plural(msg.failed.length, "layer")}: ${[...new Set(msg.failed.map((f) => f.reason))].join("; ")}.` : void 0;
+        break;
+      case "ERROR":
+        state.error = msg.message;
+        if (state.status === "running") state.status = "idle";
+        break;
+    }
+    render();
+  };
+  render();
+})();
+</script>
+  </body>
+</html>
