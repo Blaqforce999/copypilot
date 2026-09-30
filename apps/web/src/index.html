@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CopyPilot demo</title>
+    <meta name="description" content="CopyPilot audits UX copy in Figma against the Material UX writing guide. Try the plugin on a sample screen." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="demo.css" />
+  </head>
+  <body>
+    <header class="site">
+      <div class="brand"><span class="mark"></span>CopyPilot</div>
+      <p class="tagline">Audit UX copy in Figma against the Material UX writing guide.</p>
+      <nav>
+        <a href="#install">Install in Figma</a>
+        <a id="repo-link" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </header>
+
+    <main class="workspace">
+      <section class="canvas" aria-label="Sample design">
+        <div class="canvas-bar">
+          <span>Sample file · <strong>Profile settings</strong></span>
+          <span class="hint">Click a layer to select it, or click empty canvas to select the whole screen.</span>
+          <button id="reset" class="reset" type="button">Reset demo</button>
+        </div>
+        <div class="stage" id="stage">
+          <div class="frame-label">Profile settings</div>
+          <div class="screen" id="screen" data-frame="Profile settings">
+            <div class="layer h1" data-id="title" data-name="Title">Profile Settings</div>
+
+            <div class="banner error" data-group="save">
+              <div class="layer" data-id="error" data-name="Error banner">Oops! Something went wrong.</div>
+            </div>
+
+            <div class="field">
+              <div class="layer label" data-id="label" data-name="Label">Display name</div>
+              <div class="input">Ada Lovelace</div>
+              <div class="layer helper" data-id="helper" data-name="Helper text">In order to utilize this feature, simply turn on sync.</div>
+            </div>
+
+            <div class="row" data-group="save">
+              <div class="layer btn primary" data-id="submit" data-name="Button">Submit</div>
+              <div class="layer btn" data-id="cancel" data-name="Button">Cancel</div>
+            </div>
+
+            <div class="card empty" data-group="empty">
+              <div class="layer" data-id="empty" data-name="Empty state">No data</div>
+            </div>
+
+            <div class="layer body" data-id="link" data-name="Body">To learn more, click here.</div>
+
+            <div class="card dialog" data-group="dialog">
+              <div class="layer dialog-title" data-id="dialog-title" data-name="Dialog title">Are you sure?</div>
+              <div class="row">
+                <div class="layer btn" data-id="dialog-cancel" data-name="Button">Cancel</div>
+                <div class="layer btn danger" data-id="dialog-delete" data-name="Button">Delete account</div>
+              </div>
+            </div>
+
+            <div class="card" data-group="auth">
+              <div class="layer body" data-id="auth-title" data-name="Heading">Sign in to continue</div>
+              <div class="row">
+                <div class="layer btn primary" data-id="auth-login" data-name="Button">Log in</div>
+                <div class="layer btn" data-id="auth-signin" data-name="Button">Sign in with SSO</div>
+              </div>
+            </div>
+
+            <div class="toast layer" data-id="toast" data-name="Toast">Your changes have been saved successfully!</div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="plugin" aria-label="CopyPilot plugin">
+        <div class="plugin-chrome">
+          <span>CopyPilot</span>
+          <span class="dev">Development</span>
+        </div>
+        <iframe id="plugin" src="plugin.html" title="CopyPilot plugin panel"></iframe>
+      </aside>
+    </main>
+
+    <section class="install" id="install">
+      <h2>Install it in Figma</h2>
+      <ol>
+        <li>Clone the repo and run <code>npm install</code> then <code>npm run build</code>.</li>
+        <li>In the Figma desktop app: Plugins → Development → <strong>Import plugin from manifest…</strong></li>
+        <li>Pick <code>apps/plugin/manifest.json</code>, then run <strong>CopyPilot</strong> from Plugins → Development.</li>
+      </ol>
+      <p class="muted">Everything runs locally. The plugin makes no network requests, and the rules come from the Material UX writing guide.</p>
+    </section>
+
+    <script src="demo.js"></script>
+  </body>
+</html>

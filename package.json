@@ -1,0 +1,16 @@
+{
+  "name": "copypilot",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "test": "npm test -w @copypilot/copy-engine",
+    "bench": "npm run bench -w @copypilot/copy-engine",
+    "review": "npm run review -w @copypilot/copy-engine --",
+    "build": "npm run build -w @copypilot/plugin",
+    "dev": "npm run dev -w @copypilot/plugin",
+    "build:web": "npm run build && npm run build -w @copypilot/web"
+  }
+}
